@@ -5,7 +5,7 @@ let line;
 let inputA = Array();
 let i = 0; 
 while (line = liner.next()) {
-    inputA[i] =""+line;
+    inputA[i] =(""+line).replace(/[\n\r]/g,'');
     console.log("I="+i+" "+inputA[i]);
     i++;
 }
@@ -13,7 +13,7 @@ while (line = liner.next()) {
 let j = 0;
 let treeCount = 0;
 for (let i = 0; i < inputA.length; i++){
-    let cur = inputA[i].substr(0,inputA[i].length-1);
+    let cur = inputA[i]; 
 
     let trasf = cur;
     if (cur.charAt(j) === '#') {

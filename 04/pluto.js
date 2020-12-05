@@ -124,8 +124,7 @@ let j = 0;
 let obj = {};
 let valid = 0;
 while (line = liner.next()) {
-    let cur =""+line;
-    cur = cur.substr(0,cur.length-1);
+    let cur =(""+line).replace(/[\n\r]/g,'');
     // console.log("I="+i+" "+cur);
     i++;
     
