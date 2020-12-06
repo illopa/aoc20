@@ -1,9 +1,5 @@
-const _ = require('lodash');
-
 const lineByLine = require('n-readlines');
 const liner = new lineByLine('input.txt');
-
-
 
 let line;
 let i = 0; 
@@ -15,13 +11,11 @@ while (line = liner.next()) {
         answer={};
     } else {
         cur.split('').forEach(function(c) {
-            if ( !answer[c] ) { sum++; answer[c]=1}
+            if ( !answer[c] ) { sum++; answer[c]=1;}
         }); 
     }
-    console.log("I="+i+" "+cur+"; A="+_.keys(answer).join()+"; S="+sum);
+    console.log("I="+i+" C="+cur.split('').join()+"; A="+Object.keys(answer).join()+"; S="+sum);
 
-    i++;
-    
-    
+    i++;    
 }
 
