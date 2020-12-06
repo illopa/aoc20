@@ -4,7 +4,7 @@ my advent of code 2020 js stuff https://adventofcode.com/2020/
 one dir one day
 
 *pippo.js* resolves part one  
-*pluto.js* reolves part two
+*pluto.js* resolves part two
 
 to run the programs, clone the repo then
 
