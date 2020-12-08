@@ -18,10 +18,32 @@ while (line = liner.next()) {
         d: 0
     };
     p[i]=instr;
-    console.log("I="+i+" "+instr.op+" "+instr.val);
+    // console.log("I="+i+" "+instr.op+" "+instr.val);
 
     i++;    
 }
+
+function calc(i, op, val, acc) {
+    switch(op){
+        case 'acc':
+            acc += val;
+        case 'nop':
+            i++;
+            break;
+        case 'jmp':
+            i += val;
+            break;
+    }
+    return [i,acc];
+};
+
+function canChange(op) {
+    return !( op === "acc");
+};
+
+function changeOp(op) {
+    return ( op === "nop" ? "jmp" : (op === "jmp" ? "nop" : op) );
+};
 
 i = 0;
 let acc = 0;
@@ -50,11 +72,11 @@ while(true) {
             instr = p[s.i];
             v[s.i] = 0;
             if ( j === last) {
-                instr.op = (instr.op === "nop" ? "jmp" : "nop" );
-            } else if (  (last === null || j < last) &&  instr.op !== "acc" && !instr.c) {
+                instr.op = changeOp(instr.op);
+            } else if (  (last === null || j < last) &&  canChange(instr.op) && !instr.c) {
                 goback = false;
                 
-                instr.op = (instr.op === "nop" ? "jmp" : "nop" );
+                instr.op = changeOp(instr.op);
                 instr.c = 1;
                 last = j;
                 
@@ -74,17 +96,7 @@ while(true) {
     };
     j++;
     v[i]=1;
-    switch(instr.op){
-        case 'acc':
-            acc += instr.val;
-            i++;
-            break;
-        case 'nop':
-                i++;
-            break;
-        case 'jmp':
-                i+= instr.val;
-            break;
-    }
+    [i, acc] = calc(i, instr.op, instr.val, acc)
+
 }
 

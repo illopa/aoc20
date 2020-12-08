@@ -17,10 +17,32 @@ while (line = liner.next()) {
         d: 0
     };
     p[i]=instr;
-    console.log("I="+i+" "+instr.op+" "+instr.val);
+    // console.log("I="+i+" "+instr.op+" "+instr.val);
 
     i++;    
 }
+
+function calc(i, op, val, acc) {
+    switch(op){
+        case 'acc':
+            acc += val;
+        case 'nop':
+            i++;
+            break;
+        case 'jmp':
+            i += val;
+            break;
+    }
+    return [i,acc];
+};
+
+function canChange(op) {
+    return !( op === "acc");
+};
+
+function changeOp(op) {
+    return ( op === "nop" ? "jmp" : (op === "jmp" ? "nop" : op) );
+};
 
 
 let size = p.length;
@@ -43,36 +65,17 @@ while(true) {
         if ( v[i] ) { 
             // restart
             restart = true; 
-            console.log("RESTART");       
+            console.log("LOOP");       
         } else {
             v[i] = 1;
-            switch(instr.op){
-                case 'acc':
-                    acc += instr.val;
-                    i++;
-                    break;
-                case 'nop':
-                    if (!changed && !instr.c) {
-                        i+= instr.val;
-                        instr.c = 1;
-                        changed = true;
-                        console.log("CHANGED="+i);
-                    } else {
-                        i++;
-                    }
-
-                    break;
-                case 'jmp':
-                    if (!changed && !instr.c) {
-                        instr.c = 1;
-                        changed = true;                    
-                        console.log("CHANGED="+i);
-                        i++; 
-                    } else {
-                        i+= instr.val;
-                    }
-                    break;
-            }        
+            if (!changed && !instr.c && canChange(instr.op)) {
+                instr.c = 1;
+                changed = true;
+                console.log("CHANGED="+i); 
+                [i, acc] = calc(i, changeOp(instr.op), instr.val, acc);
+            } else {
+                [i, acc] = calc(i, instr.op, instr.val, acc);
+            }               
 
         }
     

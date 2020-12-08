@@ -21,7 +21,7 @@ while (line = liner.next()) {
     i++;    
 }
 
-function calc(i,op, val, acc) {
+function calc(i, op, val, acc) {
     switch(op){
         case 'acc':
             acc += val;
@@ -29,11 +29,19 @@ function calc(i,op, val, acc) {
             i++;
             break;
         case 'jmp':
-            i+= val;
+            i += val;
             break;
     }
     return [i,acc];
-}
+};
+
+function canChange(op) {
+    return !( op === "acc");
+};
+
+function changeOp(op) {
+    return ( op === "nop" ? "jmp" : (op === "jmp" ? "nop" : op) );
+};
 
 let size = p.length;
 
@@ -52,8 +60,9 @@ function engine(id, inner, i, acc, v, c) {
     let instr = p[i];
     let [i0,acc0] = calc(i, instr.op, instr.val, acc);
     engine(id, (inner+1), i0, acc0, v, c);
-    if (!c && (instr.op !== "acc") ) {
-        let [i1,acc1]=  calc(i, (instr.op === "nop" ? "jmp" : "nop"), instr.val, acc);
+    if (!c && canChange(instr.op) ) {
+        console.log("CHANGED="+i);
+        let [i1,acc1]=  calc(i, changeOp(instr.op), instr.val, acc);
         engine(inner,(inner+1), i1, acc1, Object.assign({}, v), 1);
     }
 
