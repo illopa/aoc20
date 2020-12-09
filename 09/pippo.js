@@ -39,7 +39,7 @@ let l = 25;
 sums[0]={};
 for(let i=1; i<n.length; i++){
     if (i >= l) {
-        if ( !check(n[i],sums,l,i) ) { console.log("NOT_VALID="+n[i]); return;}
+        if ( !check(n[i],sums,l,i) ) { console.log("NOT_VALID="+n[i]+" I="+i); return;}
     }
     sums[i]=adds(n,l,i);
 }
