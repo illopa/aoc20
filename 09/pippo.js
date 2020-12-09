@@ -1,46 +1,30 @@
-const lineByLine = require('n-readlines');
-const liner = new lineByLine('input.txt');
+var fs = require('fs');
+var _ = require('lodash');
 
-let line;
-let i = 0; 
-let n=[];
-while (line = liner.next()) {
-    let cur =(""+line).replace(/[\n\r]/g,'');
+let n = fs.readFileSync('input.txt').toString().replace("\r","").split("\n").map( (v) => parseInt(v));
 
-    n[i] = parseInt(cur);
-    // console.log("I="+i+"; N="+n[i]);
-    i++;    
+// console.log(JSON.stringify(n));
+
+function adds(n,len,r) {
+    let l = r+1-len; l = l < 0 ? 0 : l;
+    let a = n[r];
+    return n.slice(l,r).reduce( (o,b,i) => {
+        if ( a !== b) { o[(a+b)] = l+i; }
+        return o;
+    },{});
 }
 
+function check(v,sums,len,i) {
+    return _.every(sums.slice(i-len,i), (o) => !o[v] || (o[v] < (i-len) ) );
+}
+
+let len = 25;
 let sums = [];
-
-function adds(n,l,i) {
-    let obj = {};
-    let a = n[i];
-    for(let j=i-1; (j >= 0) && ( j > (i-l) ); j--) {
-        let b = n[j];
-        let s = (a+b);
-        if (a !== b) {obj[s]=1;}
-    }
-    // console.log("I="+i+" "+JSON.stringify(obj));
-    return obj;
-}
-
-function check(v,sums,l,i) {
-    for(let j=i-1; j > (i-l); j--){
-        let o = sums[j];
-        // console.log("J="+j+" V="+v+" "+JSON.stringify(o));
-        if ( o && o[v] ) { return true; }
-    }
-    return false;
-}
-
-let l = 25;
 sums[0]={};
-for(let i=1; i<n.length; i++){
-    if (i >= l) {
-        if ( !check(n[i],sums,l,i) ) { console.log("NOT_VALID="+n[i]+" I="+i); return;}
-    }
-    sums[i]=adds(n,l,i);
-}
 
+for(let i=1; i<n.length; i++){
+    if (i >= len) {
+        if ( check(n[i],sums,len,i) ) { console.log("NOT_VALID="+n[i]+" I="+i); return;}
+    }
+    sums[i]=adds(n,len,i);
+}

@@ -1,70 +1,21 @@
-const lineByLine = require('n-readlines');
-const liner = new lineByLine('input.txt');
+var fs = require('fs');
+var _ = require('lodash');
 
-let line;
-let i = 0; 
-let n=[];
-while (line = liner.next()) {
-    let cur =(""+line).replace(/[\n\r]/g,'');
-
-    n[i] = parseInt(cur);
-    // console.log("I="+i+"; N="+n[i]);
-    i++;    
-}
+let n = fs.readFileSync('input.txt').toString().replace("\r","").split("\n").map( (v) => parseInt(v));
 
 let checkValue=1639024365; 
-let checkj=653;
 
-let start = n.length;
-let range = { };
-range.d = start;
-range.sums = {};
-range.sums[start] = n[start];
-
-function  adds_contiguos(range, i ) {
-    let v = n[i];
-   //  let obj =  { d: i, sums: {i: v} } ;
-
-    let obj = { };
-    obj.d = i;
-    obj.sums = {};
-    obj.sums[i] = v;
-
-    let r = Object.keys(range.sums);
-    for(let j= 0; j < r.length; j++) {
-        let k = r[j];
-        let a = range.sums[k];
-        let s = v + a; 
-        if ( s == checkValue) {
-            obj.sums[k] = s;
-            obj.u = k;
-            return obj;
-        } else if ( s < checkValue){
-            obj.sums[k] = s;
-        }
-    }
-    return obj;
-
-};
-
-function minmax(d,u) {
-    let vmin = n[d];
-    let vmax = n[d];
-    for(let j=d+1; j<=u; j++){
-        if ( n[j] < vmin ) { vmin = n[j]; }
-        if ( n[j] > vmax ) { vmax = n[j]; }
-    }
-    return [vmin,vmax];
+let l = 0, r = 0;
+let sum = n[0];
+while( (sum !== checkValue) && (r < n.length) ){
+    if (sum < checkValue ) { r++; sum += n[r]}
+    else { sum -= n[l]; l++; }
 }
 
-console.log("I="+start+" "+JSON.stringify(range))
-for (let i=start-1; i >= 0; i--) {
-    range = adds_contiguos(range, i);
-    console.log("I="+i+" "+JSON.stringify(range));
+let res = n.slice(l,(r+1)).reduce( (o,v) => {
+    if ( !o.vmin || (v < o.vmin) ) { o.vmin = v; }
+    if ( !o.vmax || (v > o.vmax) ) { o.vmax = v; }
+    return o;
+},{});
 
-    if ( range.u ) {
-        let [vmin,vmax] = minmax(range.d,range.u);
-        console.log("MIN="+vmin+" MAX="+vmax+" S="+(vmin+vmax));
-        return;
-    }
-}
+console.log("MIN="+res.vmin+" MAX="+res.vmax+" S="+(res.vmin+res.vmax));

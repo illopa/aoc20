@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "fs": "0.0.1-security",
     "lodash": "^4.17.20",
     "n-readlines": "^1.0.1"
   },
