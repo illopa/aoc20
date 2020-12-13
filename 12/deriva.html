@@ -1,0 +1,238 @@
+<html>
+<head>
+    <title>deriva - based on AOC 2020 day 12</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200&display=swap" rel="stylesheet">
+    <script src="https://cdn.anychart.com/releases/8.9.0/js/graphics.min.js"></script>
+    <script src="aoc20_12_1.js"></script>
+    <script src="aoc20_12_2.js"></script>
+
+    <style>html,body, * {font-family: 'Source Code Pro', monospace;}</style>
+</head>
+<body>
+
+    <h1 style="text-align: center; margin: auto; margin-bottom:10px;">deriva - based on AOC 2020 day 12</h1>
+<div style="float:left;  width: 100%; height:540px; ">
+    <div  style="float:left; width: 45%; padding: 10px;">
+        <div id="aoc20_12_1" style="width: 520px; height: 520px;border: green solid 1px;margin: auto;"></div>
+    </div>
+    <div style="width: 6%; float:left;height:100%"><pre id="mem" ></pre></div>
+
+    <div  style="float:right; width: 45%; padding: 10px;">
+        <div id="aoc20_12_2" style="width: 520px; height: 520px; border: green solid 1px;margin: auto;"></div>
+    </div>
+</div> 
+<div style="float:left;  width: 100%; ">
+    <div  style="float:left; width: 45%; padding: 10px;">
+        <div id="aoc20_12_1state" style="width: 520px;margin: auto;">1</div>
+    </div>
+    <div style="width: 6%; float:left;height:100%">&nbsp;</div>
+
+    <div  style="float:right; width: 45%; padding: 10px;">
+        <div id="aoc20_12_2state" style="width: 520px;margin: auto;">2</div>
+    </div>
+</div>  
+
+<script>
+var grutil = function() {
+    var grafico = {
+        x: {
+            min: 0,
+            max: 0
+        },
+        y:  {
+            min: 0,
+            max: 0
+        }
+    };
+    var scala = {
+        x: {
+            min: 0,
+            max: 0
+        },
+        y:  {
+            min: 0,
+            max: 0
+        }        
+    };
+    var wG = 0;
+    var wS = 0;
+    var hG = 0;
+    var hS = 0;
+
+    return {
+        setGrafico: function (xMin,xMax,yMin,yMax){
+            grafico = {
+                x: {
+                    min: xMin,
+                    max: xMax
+                },
+                y:  {
+                    min: yMin,
+                    max: yMax
+                }
+            };
+            wG = grafico.x.max - grafico.x.min;
+            hG = grafico.y.max - grafico.y.min;
+        },
+        setScala: function (xMin,xMax,yMin,yMax){
+            scala = {
+                x: {
+                    min: xMin,
+                    max: xMax
+                },
+                y:  {
+                    min: yMin,
+                    max: yMax
+                }
+            };
+            wS = scala.x.max - scala.x.min;
+            hS = scala.y.max - scala.y.min;
+
+        },   
+
+        trasfX: function(x) {
+            var x0 = x - scala.x.min;
+            var x1 = x0 * (wG/wS) + grafico.x.min;
+            return x1;
+        },
+        trasfY: function(y) {
+            var y0 = y - scala.y.min;
+            var y1 = grafico.y.max - y0 * (hG/hS) ;
+            return y1;
+        },
+        
+        trasfW: function(w) {
+            var w1 = w * (wG/wS);
+            return w1;
+        },
+        trasfH: function(h) {
+            var h1 = h * (hG/hS) ;
+            return h1;
+        }         
+    }
+
+};
+
+
+let getInstr = function() {
+
+    let op = ['E','S','W','N','F','F','L','R'];
+
+    let opn = Math.round(Math.random() * 7.9999 -0.50);
+    let step = 0;
+
+    if (opn <= 3) {
+        step = Math.round(Math.random() * 4.9999 +0.50);
+    } else if (opn <= 5 ){
+        step = Math.round(Math.random() * 29.9999 +0.50);
+    } else {
+        step = 90 * Math.round(Math.random() * 2.9999 +0.50);
+    }
+    return ""+op[opn]+step;
+};
+
+let mem = [];
+
+let s1 = { E: 0, N: 0, F: "E" };
+let s2 = { E: 0, N: 0,  WE:10, WN: 1 };
+
+stage1 = acgraph.create('aoc20_12_1');
+let l1 = 1000;
+
+const p1 = grutil();
+p1.setGrafico(10,510,10,510);
+p1.setScala(-l1,l1,-l1,l1);
+
+stage2 = acgraph.create('aoc20_12_2');
+let l2 = 15000;
+let [x2,y2] = [0,0];
+
+const p2 = grutil();
+p2.setGrafico(10,510,10,510);
+p2.setScala(-l2,l2,-l2,l2);
+
+function render(s1,s2) {
+    let el = document.getElementById("mem");
+    el.innerText = mem.join('\n');
+
+    let el1 = document.getElementById("aoc20_12_1state");
+    el1.innerText = JSON.stringify(s1)
+
+    let el2 = document.getElementById("aoc20_12_2state");
+    el2.innerText = JSON.stringify(s2);
+    
+}
+
+let stop = false;
+document.getElementById("mem").addEventListener("click", function() {
+    stop = !stop;
+    if (!stop) {
+        htmlstep(s1,s2,0);
+    }
+});
+
+function htmlstep(s1,s2,i) {
+    let instr = getInstr();
+    mem.unshift(instr);
+    if ( mem.length > 26 ) { mem.pop();}
+    render(s1,s2);
+
+    let [dax11,day11] = [p1.trasfX(s1.E),p1.trasfY(s1.N)];
+    let [dax12,day12] = [p1.trasfX(s2.E),p1.trasfY(s2.N)];
+    let [dax21,day21] = [p2.trasfX(s1.E),p2.trasfY(s1.N)];
+    let [dax22,day22] = [p2.trasfX(s2.E),p2.trasfY(s2.N)];
+
+    let next1 = aoc201201.step(s1,instr);
+    let next2 = aoc201202.step(s2,instr);
+
+    let [ax11,ay11] = [p1.trasfX(next1.E),p1.trasfY(next1.N)];
+    let [ax12,ay12] = [p1.trasfX(next2.E),p1.trasfY(next2.N)];   
+    let [ax21,ay21] = [p2.trasfX(next1.E),p2.trasfY(next1.N)];   
+    let [ax22,ay22] = [p2.trasfX(next2.E),p2.trasfY(next2.N)];    
+
+    stage1.path()
+        .moveTo(dax11,day11)
+        .lineTo(ax11,ay11);
+
+    // stage1.translate(dax11-ax11,day11-ay11);  
+
+    /*        
+    stage1.path()
+        .moveTo(dax12,day12)
+        .lineTo(ax12,ay12)
+        .stroke("red 1");   
+     
+          
+    stage2.path()
+        .moveTo(dax21,day21)
+        .lineTo(ax21,ay21);     
+     */ 
+
+    stage2.path()
+        .moveTo(dax22,day22)
+        .lineTo(ax22,ay22)
+        .stroke("red 1");  
+        
+    if ( (Math.abs(ax22-x2-250) > 250) || (Math.abs(ay22-y2-250) > 250) ) {
+        stage2.translate(x2-ax22+375,y2-ay22+375);
+        x2=ax22-375; y2=ay22-375;
+    }
+    
+   
+    setTimeout(function() {
+        if (!stop){
+            htmlstep(next1,next2,i+1);
+        } else {
+            s1 = next1;
+            s2 = next2;
+        }
+    },300);
+}
+
+htmlstep(s1,s2,0);
+
+</script>
+
+</body>
+</html>

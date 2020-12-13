@@ -1,4 +1,4 @@
-const aoc = function() {
+const aoc201201 = function() {
 
     function decode(instr){
         return [instr[0],parseInt(instr.substr(1))];
@@ -62,4 +62,4 @@ const aoc = function() {
 
     };
 }();
-(typeof module !== "undefined") && (module.exports = aoc);
+(typeof module !== "undefined") && (module.exports = aoc201201);

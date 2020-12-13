@@ -1,8 +1,12 @@
 <html>
 <head>
     <title>AOC 2020 day 12 part 1</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200&display=swap" rel="stylesheet">
     <script src="https://cdn.anychart.com/releases/8.9.0/js/graphics.min.js"></script>
     <script src="aoc20_12_1.js"></script>
+
+    <style>html,body, * {font-family: 'Source Code Pro', monospace;}</style>
 </head>
 <body>
 
@@ -896,7 +900,7 @@ function htmlstep(s,i) {
     if ( i >= mem.length) { result(s); }
     let instr = mem[i];
     let [dax,day] = [p.trasfX(s.E),p.trasfY(s.N)];
-    let nexts = aoc.step(s,instr);
+    let nexts = aoc201201.step(s,instr);
     let [ax,ay] = [p.trasfX(nexts.E),p.trasfY(nexts.N)];
     console.log(dax,day,ax,ay);
     stage.path()
