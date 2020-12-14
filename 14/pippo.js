@@ -1,7 +1,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 
-let program = fs.readFileSync('input.txt').toString().replace("\r","").split("\n");
+let program = fs.readFileSync('input.txt').toString().replace(/\r/g,"").split("\n");
 
 function isMask(l){
     return ( l[1] === 'a'); 
