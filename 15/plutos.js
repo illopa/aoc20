@@ -2,7 +2,7 @@ let starting = [7,14,0,17,11,1,2];
 
 let last = 0;
 let turn = 1;
-let spoken = {};
+let spoken =[];
 let count = 0;
 
 let timestart = new Date().getTime();
@@ -12,9 +12,11 @@ starting.forEach( (n,i) => {if (i+1 < starting.length) {spoken[n] = turn; count+
 
 console.log(spoken, last,turn);
 
+spoken[30000000]= 0;
+
 function game(n,turn) {
     let s = 0;
-    if (n in spoken ) { s = turn -1 - spoken[n]; }
+    if (spoken[n] != null) { s = turn -1 - spoken[n]; }
     else { count++; }
     spoken[n] = turn-1;
     return [s,turn+1];
