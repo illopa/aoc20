@@ -16,7 +16,7 @@ spoken[30000000]= 0;
 
 function game(n,turn) {
     let s = 0;
-    if (spoken[n] != null) { s = turn -1 - spoken[n]; }
+    if (spoken[n]) { s = turn -1 - spoken[n]; }
     else { count++; }
     spoken[n] = turn-1;
     return [s,turn+1];
