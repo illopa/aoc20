@@ -1,0 +1,19 @@
+HTML, BODY, * {font-family: 'Source Code Pro', monospace;}
+HTML {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+
+H1 {text-align: center; margin: auto; margin-bottom:1em;}
+
+.board {float:left;height:540px; width: 100%;}
+
+.dbox1, .dbox2, .dbox3 {float:left;  }
+.dbox2, .dbox3 {min-width:45%;}
+.dbox1 {min-width: 10%; padding-left:1em; padding-right:1em; float:left; height:100%; overflow-y: hidden;}
+
+#aoc20_12_1, #aoc20_12_2 {width: 520px; height: 520px; border: #cccccc solid 1px; margin: auto; margin-top: 1em; margin-bottom:1em;}
+#aoc20_12_1state, #aoc20_12_2state {width: 520px; margin: auto; }
+#aoc20_12_2state { color:red;}

@@ -1,119 +1,40 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>deriva - based on AOC 2020 day 12</title>
+    <meta name="author" content="illopa">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="preconnect" href="https://fonts.gstatic.com"> 
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200&display=swap" rel="stylesheet">
     <script src="https://cdn.anychart.com/releases/8.9.0/js/graphics.min.js"></script>
+    <script src="grutil.js"></script>
     <script src="aoc20_12_1.js"></script>
     <script src="aoc20_12_2.js"></script>
 
-    <style>html,body, * {font-family: 'Source Code Pro', monospace;}</style>
+    <link rel="stylesheet" href="deriva.css">
 </head>
 <body>
 
-    <h1 style="text-align: center; margin: auto; margin-bottom:10px;">deriva - based on AOC 2020 day 12</h1>
-<div style="float:left;  width: 100%; height:540px; ">
-    <div  style="float:left; width: 45%; padding: 10px;">
-        <div id="aoc20_12_1" style="width: 520px; height: 520px;border: green solid 1px;margin: auto;"></div>
-    </div>
-    <div style="width: 6%; float:left;height:100%"><pre id="mem" ></pre></div>
+    <h1>deriva - based on AOC 2020 day 12</h1>
 
-    <div  style="float:right; width: 45%; padding: 10px;">
-        <div id="aoc20_12_2" style="width: 520px; height: 520px; border: green solid 1px;margin: auto;"></div>
-    </div>
-</div> 
-<div style="float:left;  width: 100%; ">
-    <div  style="float:left; width: 45%; padding: 10px;">
-        <div id="aoc20_12_1state" style="width: 520px;margin: auto;">1</div>
-    </div>
-    <div style="width: 6%; float:left;height:100%">&nbsp;</div>
+    <div class="board">
 
-    <div  style="float:right; width: 45%; padding: 10px;">
-        <div id="aoc20_12_2state" style="width: 520px;margin: auto;">2</div>
-    </div>
-</div>  
+        <div class="dbox2">   
+            <div id="aoc20_12_1"></div> 
+            <div id="aoc20_12_1state">1</div>          
+        </div>
+
+        <div class="dbox1"><pre id="mem" ></pre></div>
+
+        <div class="dbox3">
+            <div id="aoc20_12_2"></div>
+            <div id="aoc20_12_2state">2</div>
+        </div>
+
+    </div> 
 
 <script>
-var grutil = function() {
-    var grafico = {
-        x: {
-            min: 0,
-            max: 0
-        },
-        y:  {
-            min: 0,
-            max: 0
-        }
-    };
-    var scala = {
-        x: {
-            min: 0,
-            max: 0
-        },
-        y:  {
-            min: 0,
-            max: 0
-        }        
-    };
-    var wG = 0;
-    var wS = 0;
-    var hG = 0;
-    var hS = 0;
-
-    return {
-        setGrafico: function (xMin,xMax,yMin,yMax){
-            grafico = {
-                x: {
-                    min: xMin,
-                    max: xMax
-                },
-                y:  {
-                    min: yMin,
-                    max: yMax
-                }
-            };
-            wG = grafico.x.max - grafico.x.min;
-            hG = grafico.y.max - grafico.y.min;
-        },
-        setScala: function (xMin,xMax,yMin,yMax){
-            scala = {
-                x: {
-                    min: xMin,
-                    max: xMax
-                },
-                y:  {
-                    min: yMin,
-                    max: yMax
-                }
-            };
-            wS = scala.x.max - scala.x.min;
-            hS = scala.y.max - scala.y.min;
-
-        },   
-
-        trasfX: function(x) {
-            var x0 = x - scala.x.min;
-            var x1 = x0 * (wG/wS) + grafico.x.min;
-            return x1;
-        },
-        trasfY: function(y) {
-            var y0 = y - scala.y.min;
-            var y1 = grafico.y.max - y0 * (hG/hS) ;
-            return y1;
-        },
-        
-        trasfW: function(w) {
-            var w1 = w * (wG/wS);
-            return w1;
-        },
-        trasfH: function(h) {
-            var h1 = h * (hG/hS) ;
-            return h1;
-        }         
-    }
-
-};
-
 
 let getInstr = function() {
 
@@ -137,11 +58,15 @@ let mem = [];
 let s1 = { E: 0, N: 0, F: "E" };
 let s2 = { E: 0, N: 0,  WE:10, WN: 1 };
 
+const bdim = 500, blim = 10;
+const bh = bdim/2, bsh = bdim*3/2;
+
+
 stage1 = acgraph.create('aoc20_12_1');
 let l1 = 1000;
 
 const p1 = grutil();
-p1.setGrafico(10,510,10,510);
+p1.setGrafico(blim,bdim+blim,blim,bdim+blim);
 p1.setScala(-l1,l1,-l1,l1);
 
 stage2 = acgraph.create('aoc20_12_2');
@@ -149,7 +74,7 @@ let l2 = 15000;
 let [x2,y2] = [0,0];
 
 const p2 = grutil();
-p2.setGrafico(10,510,10,510);
+p2.setGrafico(blim,bdim+blim,blim,bdim+blim);
 p2.setScala(-l2,l2,-l2,l2);
 
 function render(s1,s2) {
@@ -214,12 +139,11 @@ function htmlstep(s1,s2,i) {
         .lineTo(ax22,ay22)
         .stroke("red 1");  
         
-    if ( (Math.abs(ax22-x2-250) > 250) || (Math.abs(ay22-y2-250) > 250) ) {
-        stage2.translate(x2-ax22+375,y2-ay22+375);
-        x2=ax22-375; y2=ay22-375;
+    if ( (Math.abs(ax22-x2-bh) > bh) || (Math.abs(ay22-y2-bh) > bh) ) {
+        stage2.translate(x2-ax22+bsh,y2-ay22+bsh);
+        x2=ax22-bsh; y2=ay22-bsh;
     }
     
-   
     setTimeout(function() {
         if (!stop){
             htmlstep(next1,next2,i+1);
@@ -227,7 +151,7 @@ function htmlstep(s1,s2,i) {
             s1 = next1;
             s2 = next2;
         }
-    },300);
+    }, 300);
 }
 
 htmlstep(s1,s2,0);
