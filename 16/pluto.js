@@ -57,8 +57,8 @@ let classmap = nby.slice(1).reduce( (a,t) => {
 // determine which field is which
 let collected = [];
 while(collected.length<classmap.length) {
-    let p = classmap.slice(1).reduce( (r,a) => (a.length === 1) && ((_.intersection(collected,a)).length === 0) ? a : r, [] );
-    // console.log(p); 
+    let p = classmap.slice(1).reduce( (r,a) => (a.length === 1) && ((_.intersection(collected,a)).length === 0) ? a : r, classmap[0] );
+    console.log(p); 
     collected = collected.concat(p[0]);
     classmap = classmap.map( (a) => (a.length === 1) ? a : _.difference(a,collected) );
 }
