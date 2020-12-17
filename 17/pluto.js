@@ -10,13 +10,12 @@ function S(m,w,z,i,j,v){
     if ( !(w in m) ) { m[w] = []; }
     if ( !(z in m[w]) ) { m[w][z] = []; }
     if ( !(i in m[w][z]) ) { m[w][z][i] = []; }
-    if ( !(j in m[w][z][i]) ) { m[w][z][i][j] = []; }
     m[w][z][i][j] = v;
 }
 
-// TODO
-function N(m,z,i,j) {
-    return _.range(z-1,z+2).reduce( (sa,a) => sa+ _.range(i-1,i+2).reduce( (sb,b) =>  sb+_.range(j-1,j+2).reduce( (sc,c) => sc+V(m,a,b,c), 0), 0) ,0) -V(m,z,i,j);
+
+function N(m,w,z,i,j) {
+    return _.range(w-1,w+2).reduce( (sd,d) => sd+ _.range(z-1,z+2).reduce( (sa,a) => sa+ _.range(i-1,i+2).reduce( (sb,b) =>  sb+_.range(j-1,j+2).reduce( (sc,c) => sc+V(m,d,a,b,c), 0), 0) ,0) ,0) -V(m,w,z,i,j);
 }
 
 function T(v,n) {
@@ -27,10 +26,12 @@ function T(v,n) {
 
 function U(m) {
     let mu = [];
-    for(let z=0; z <= m.length; z++) {
-        for(let i=0; i <= m[0].length; i++) {
-            for(let j=0; j <= m[0][0].length; j++) {
-                S(mu,z,i,j,V(m,z-1,i-1,j-1));
+    for(let w=0; w <= m.length; w++) {
+        for(let z=0; z <= m[0].length; z++) {
+            for(let i=0; i <= m[0][0].length; i++) {
+                for(let j=0; j <= m[0][0][0].length; j++) {
+                    S(mu,w,z,i,j,V(m,w-1,z-1,i-1,j-1));
+                }
             }
         }
     }
@@ -39,12 +40,14 @@ function U(m) {
 
 function ST(m) {
     let mt = [];
-    for(let z=0; z <= 1+m.length; z++) {
-        for(let i=0; i <= 1+m[0].length; i++) {
-            for(let j=0; j <= 1+m[0][0].length; j++) {
-                let v = V(m,z,i,j);
-                let n = N(m,z,i,j)
-                S(mt,z,i,j,T(v,n));
+    for(let w=0; w <= 1+m.length; w++) {
+        for(let z=0; z <= 1+m[0].length; z++) {
+            for(let i=0; i <= 1+m[0][0].length; i++) {
+                for(let j=0; j <= 1+m[0][0][0].length; j++) {
+                    let v = V(m,w,z,i,j);
+                    let n = N(m,w,z,i,j)
+                    S(mt,w,z,i,j,T(v,n));
+                }
             }
         }
     }
@@ -53,10 +56,12 @@ function ST(m) {
 
 function C(m) {
     let s = 0;
-    for(let z=0; z < m.length; z++) {
-        for(let i=0; i < m[0].length; i++) {
-            for(let j=0; j < m[0][0].length; j++) {
-                s += V(m,z,i,j);
+    for(let w=0; w < m.length; w++) {
+        for(let z=0; z < m[0].length; z++) {
+            for(let i=0; i < m[0][0].length; i++) {
+                for(let j=0; j < m[0][0][0].length; j++) {
+                    s += V(m,w,z,i,j);
+                }
             }
         }
     }
@@ -64,10 +69,11 @@ function C(m) {
 }
 
 let space = [];
+space[0] = [];
 
-space[0] = fs.readFileSync('input.txt').toString().replace(/\r/g,"").split("\n");
+space[0][0] = fs.readFileSync('input.txt').toString().replace(/\r/g,"").split("\n");
 
-space[0] = space[0].map( (si,i) => si.split('').map( (sij,j) => sij === '#' ? 1 :0 ) );
+space[0][0] = space[0][0].map( (si,i) => si.split('').map( (sij,j) => sij === '#' ? 1 :0 ) );
 
 // console.log(space);
 
