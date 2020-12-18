@@ -34,7 +34,32 @@ function mprec(stem) {
     return tot;
 }
 
+/*
+    1 + (2 * 3) + (4 * (5 + 6))
+
+    the matrix m depicts the expression levels
+    
+    1
+    +
+    (   
+        2
+        *
+        3
+        )
+    +   
+    (
+        4
+        *
+        (
+            5
+            +
+            6
+            )
+        )
+ */
+
 function calc(stem) {
+
     let m=[];
     let p = 0;
     let pmax = 0;
@@ -45,6 +70,7 @@ function calc(stem) {
         if ( stem[i] ===')') { p--; }
         if ( p > pmax) { pmax = p; }
     }
+    
     let inner = [];
     for (let j=pmax; j>=0;j--) {
         for (let i = 0; i<stem.length; i++){
