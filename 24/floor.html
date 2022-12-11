@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>floor - based on AOC 2020 day 24</title>
+    <meta name="author" content="illopa">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200&display=swap" rel="stylesheet">
+    <script src="https://cdn.anychart.com/releases/8.9.0/js/graphics.min.js"></script>
+    <script src="grutil.js"></script>
+    <script src="dhex.js"></script>
+    <script src="aoc20_24.js"></script> 
+    
+
+
+    <link rel="stylesheet" href="floor.css">
+</head>
+<body>
+
+    <h1>floor - based on AOC 2020 day 24</h1>
+
+    <div class="board">
+
+        <div class="dbox">   
+            <div id="aoc20_24"></div> 
+            <div id="aoc20_24state"></div>          
+        </div>
+
+    </div> 
+
+<script>
+
+const bdim = 500, blim = 10;
+
+stage = acgraph.create('aoc20_24');
+let l1 = 10;
+
+const p = grutil();
+p.setGrafico(blim,bdim+blim,blim,bdim+blim);
+p.setScala(-l1,l1,-l1,l1);
+
+let dhex1 = dhex(stage,p);
+
+dhex1.draw(0,0);
+dhex1.draw(2,0);
+dhex1.draw(-2,0);
+
+dhex1.draw(1,1);
+/*
+dhex1.draw(1,-1);
+dhex1.draw(-1,1);
+dhex1.draw(-1,-1); */
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>deriva - based on AOC 2020 day 12</title>
+    <meta name="author" content="illopa">
+    <meta name="viewport" content="width=720, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200&display=swap" rel="stylesheet">
+    <script src="https://cdn.anychart.com/releases/8.9.0/js/graphics.min.js"></script>
+    <script src="grutil.js"></script>
+    <script src="aoc20_12_1.js"></script>
+    <script src="aoc20_12_2.js"></script>
+
+    <link rel="stylesheet" href="deriva.css">
+</head>
+<body>
+
+    <h1>deriva - based on AOC 2020 day 12</h1>
+
+    <div class="board">
+
+        <div class="dbox2">   
+            <div id="aoc20_12_1"></div> 
+            <div id="aoc20_12_1state">1</div>          
+        </div>
+
+        <div class="dbox1"><pre id="mem" ></pre></div>
+
+        <div class="dbox3">
+            <div id="aoc20_12_2"></div>
+            <div id="aoc20_12_2state">2</div>
+        </div>
+
+    </div> 
+
+<script>
+
+let getInstr = function() {
+
+    let op = ['E','S','W','N','F','F','L','R'];
+
+    let opn = Math.round(Math.random() * 7.9999 -0.50);
+    let step = 0;
+
+    if (opn <= 3) {
+        step = Math.round(Math.random() * 4.9999 +0.50);
+    } else if (opn <= 5 ){
+        step = Math.round(Math.random() * 29.9999 +0.50);
+    } else {
+        step = 90 * Math.round(Math.random() * 2.9999 +0.50);
+    }
+    return ""+op[opn]+step;
+};
+
+let mem = [];
+
+let s1 = { E: 0, N: 0, F: "E" };
+let s2 = { E: 0, N: 0,  WE:10, WN: 1 };
+
+const bdim = 500, blim = 10;
+const bh = bdim/2, bsh = bdim*3/2;
+
+
+stage1 = acgraph.create('aoc20_12_1');
+let l1 = 1000;
+
+const p1 = grutil();
+p1.setGrafico(blim,bdim+blim,blim,bdim+blim);
+p1.setScala(-l1,l1,-l1,l1);
+
+stage2 = acgraph.create('aoc20_12_2');
+let l2 = 15000;
+let [x2,y2] = [0,0];
+
+const p2 = grutil();
+p2.setGrafico(blim,bdim+blim,blim,bdim+blim);
+p2.setScala(-l2,l2,-l2,l2);
+
+function render(s1,s2) {
+    let el = document.getElementById("mem");
+    el.innerText = mem.join('\n');
+
+    let el1 = document.getElementById("aoc20_12_1state");
+    el1.innerText = JSON.stringify(s1)
+
+    let el2 = document.getElementById("aoc20_12_2state");
+    el2.innerText = JSON.stringify(s2);
+    
+}
+
+let stop = false;
+document.getElementById("mem").addEventListener("click", function() {
+    stop = !stop;
+    if (!stop) {
+        htmlstep(s1,s2,0);
+    }
+});
+
+function htmlstep(s1,s2,i) {
+    let instr = getInstr();
+    mem.unshift(instr);
+    if ( mem.length > 26 ) { mem.pop();}
+    render(s1,s2);
+
+    let [dax11,day11] = [p1.trasfX(s1.E),p1.trasfY(s1.N)];
+    let [dax12,day12] = [p1.trasfX(s2.E),p1.trasfY(s2.N)];
+    let [dax21,day21] = [p2.trasfX(s1.E),p2.trasfY(s1.N)];
+    let [dax22,day22] = [p2.trasfX(s2.E),p2.trasfY(s2.N)];
+
+    let next1 = aoc201201.step(s1,instr);
+    let next2 = aoc201202.step(s2,instr);
+
+    let [ax11,ay11] = [p1.trasfX(next1.E),p1.trasfY(next1.N)];
+    let [ax12,ay12] = [p1.trasfX(next2.E),p1.trasfY(next2.N)];   
+    let [ax21,ay21] = [p2.trasfX(next1.E),p2.trasfY(next1.N)];   
+    let [ax22,ay22] = [p2.trasfX(next2.E),p2.trasfY(next2.N)];    
+
+    stage1.path()
+        .moveTo(dax11,day11)
+        .lineTo(ax11,ay11);
+
+    // stage1.translate(dax11-ax11,day11-ay11);  
+
+    /*        
+    stage1.path()
+        .moveTo(dax12,day12)
+        .lineTo(ax12,ay12)
+        .stroke("red 1");   
+     
+          
+    stage2.path()
+        .moveTo(dax21,day21)
+        .lineTo(ax21,ay21);     
+     */ 
+
+    stage2.path()
+        .moveTo(dax22,day22)
+        .lineTo(ax22,ay22)
+        .stroke("red 1");  
+        
+    if ( (Math.abs(ax22-x2-bh) > bh) || (Math.abs(ay22-y2-bh) > bh) ) {
+        stage2.translate(x2-ax22+bsh,y2-ay22+bsh);
+        x2=ax22-bsh; y2=ay22-bsh;
+    }
+    
+    setTimeout(function() {
+        if (!stop){
+            htmlstep(next1,next2,i+1);
+        } else {
+            s1 = next1;
+            s2 = next2;
+        }
+    }, 300);
+}
+
+htmlstep(s1,s2,0);
+
+</script>
+
+</body>
+</html>
